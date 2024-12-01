@@ -46,10 +46,10 @@ class FeedInteractorTests: XCTestCase {
         // Given
         let spy = FeedPresentationLogicSpy()
         sut.presenter = spy
-        let request = Feed.Something.Request()
+        //let request = Feed.Something.Request()
         
         // When
-        sut.doSomething(request: request)
+        //sut.doSomething(request: request)
         
         // Then
         XCTAssertTrue(spy.presentSomethingCalled, "doSomething(request:) should ask the presenter to format the result")

@@ -47,10 +47,10 @@ class FeedPresenterTests: XCTestCase {
         // Given
         let spy = FeedDisplayLogicSpy()
         sut.viewController = spy
-        let response = Feed.Something.Response()
+        //let response = Feed.Something.Response()
         
         // When
-        sut.presentSomething(response: response)
+        //sut.presentSomething(response: response)
         
         // Then
         XCTAssertTrue(spy.displaySomethingCalled, "presentSomething(response:) should ask the view controller to display the result")
