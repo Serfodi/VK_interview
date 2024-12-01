@@ -13,13 +13,15 @@ enum Feed {
     
     enum Something {
         enum Request {
-            
+            case search(parameters: ConfigurationQuery)
         }
         enum Response {
-            
+            case presentPhotos(photos: [Photo])
+            case presentError(error: Error)
         }
         enum ViewModel {
-            
+            case displayPhotosCell(photos: [PhotoDisplayCell])
+            case displayError(error: String)
         }
     }
 }

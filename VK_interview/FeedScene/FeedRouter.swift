@@ -12,12 +12,12 @@ import UIKit
 }
 
 protocol FeedDataPassing {
-    var dataStore: FeedDataStore? { get }
+//    var dataStore: FeedDataStore? { get }
 }
 
 class FeedRouter: NSObject, FeedRoutingLogic, FeedDataPassing {
     weak var viewController: FeedViewController?
-    var dataStore: FeedDataStore?
+//    var dataStore: FeedDataStore?
     
     // MARK: Routing
     

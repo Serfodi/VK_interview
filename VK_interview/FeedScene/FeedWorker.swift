@@ -9,7 +9,14 @@ import UIKit
 
 class FeedWorker {
     
-    func doSomeWork() {
-        
+    var fetcher: DataFetcher
+    
+    init() {
+        self.fetcher = NetworkDataFetcher(networking: NetworkService())
     }
+    
+    func getPhotos(parameters: ConfigurationQuery) async throws -> [Photo] {
+        try await fetcher.getPhotos(parameters: parameters.requestParameters)
+    }
+    
 }

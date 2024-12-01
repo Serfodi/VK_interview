@@ -11,20 +11,28 @@ protocol FeedBusinessLogic {
     func doSomething(request: Feed.Something.Request)
 }
 
-protocol FeedDataStore {
-    //var name: String { get set }
-}
 
-class FeedInteractor: FeedBusinessLogic, FeedDataStore {
+class FeedInteractor: FeedBusinessLogic {
+    
     var presenter: FeedPresentationLogic?
     var worker: FeedWorker!
-    //var name: String = ""
     
     // MARK: Do something
     
     func doSomething(request: Feed.Something.Request) {
         if worker === nil { worker = FeedWorker() }
         
-        //presenter?.presentSomething(response: response)
+        switch request {
+        case .search(parameters: let parameters):
+            Task(priority: .userInitiated) {
+                do {
+                    let photos = try await worker.getPhotos(parameters: parameters)
+                    self.presenter?.presentSomething(response: .presentPhotos(photos: photos))
+                } catch {
+                    self.presenter?.presentSomething(response: .presentError(error: error))
+                }
+            }
+        }
+        
     }
 }

@@ -18,6 +18,36 @@ class FeedPresenter: FeedPresentationLogic {
     // MARK: Do something
     
     func presentSomething(response: Feed.Something.Response) {
-        
+        switch response {
+        case .presentPhotos(photos: let photos):
+            let photosCell = prepareMedia(photos)
+            Task {
+                await viewController?.displaySomething(viewModel: .displayPhotosCell(photos: photosCell))
+            }
+        case .presentError(error: let error):
+            Task {
+                await viewController?.displaySomething(viewModel: .displayError(error: error.localizedDescription))
+            }
+        }
     }
+}
+
+private extension FeedPresenter {
+    
+    func prepareMedia(_ photos: [Photo]) -> [PhotoDisplayCell] {
+        photos.map(convert)
+    }
+    
+    func convert(from photo: Photo) -> PhotoDisplayCell {
+        let size = CalculateCellSize().sizes(description: photo.description, photo: CGSize(width: photo.width, height: photo.height))
+        let photoUrlString: String = photo.urls.small
+        return PhotoDisplayCell(id: photo.id,
+                              imageURL: photoUrlString,
+                              description: photo.description,
+                              user: photo.user,
+                              size: size,
+                              date: photo.createdAt ?? Date(),
+                              like: photo.likes ?? 0)
+    }
+    
 }

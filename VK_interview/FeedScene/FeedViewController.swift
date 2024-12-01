@@ -8,7 +8,7 @@
 import UIKit
 
 protocol FeedDisplayLogic: AnyObject {
-    func displaySomething(viewModel: Feed.Something.ViewModel)
+    @MainActor func displaySomething(viewModel: Feed.Something.ViewModel)
 }
 
 class FeedViewController: UIViewController, FeedDisplayLogic {
@@ -16,16 +16,20 @@ class FeedViewController: UIViewController, FeedDisplayLogic {
     var interactor: FeedBusinessLogic?
     var router: (NSObjectProtocol & FeedRoutingLogic & FeedDataPassing)?
     
+    let collectionView: PhotoCollectionView
+    let dataSource : PhotoDataSource
+    
     // MARK: Object lifecycle
     
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+    init() {
+        self.collectionView = .init()
+        self.dataSource = .init(collectionView)
+        super.init(nibName: nil, bundle: nil)
         setup()
     }
     
     required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        setup()
+        fatalError("init(coder:) has not been implemented")
     }
     
     // MARK: Setup
@@ -40,7 +44,7 @@ class FeedViewController: UIViewController, FeedDisplayLogic {
         interactor.presenter = presenter
         presenter.viewController = viewController
         router.viewController = viewController
-        router.dataStore = interactor
+//        router.dataStore = interactor
     }
     
     // MARK: Routing
@@ -56,21 +60,33 @@ class FeedViewController: UIViewController, FeedDisplayLogic {
     
     // MARK: View lifecycle
     
+    override func loadView() {
+        super.loadView()
+        view.addSubview(collectionView)
+        collectionView.edgesToSuperView()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        collectionView.register(PhotoViewCell.self)
+        collectionView.delegate = dataSource
         doSomething()
-        
-        view.backgroundColor = .blue
-        
     }
     
     // MARK: Do something
     
     func doSomething() {
-        
+        let query = ConfigurationQuery(query: "cat")
+        interactor?.doSomething(request: .search(parameters: query))
     }
     
     func displaySomething(viewModel: Feed.Something.ViewModel) {
-        
+        switch viewModel {
+        case .displayPhotosCell(photos: let photos):
+            dataSource.reload(photos)
+        case .displayError(error: let error):
+            print(error)
+        }
     }
+    
 }
