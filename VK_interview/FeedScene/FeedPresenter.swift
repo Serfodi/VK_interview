@@ -28,6 +28,10 @@ class FeedPresenter: FeedPresentationLogic {
             Task {
                 await viewController?.displaySomething(viewModel: .displayError(error: error.localizedDescription))
             }
+        case .presentFooterLoader:
+            Task {
+                await viewController?.displaySomething(viewModel: .displayFooterLoader)
+            }
         }
     }
 }

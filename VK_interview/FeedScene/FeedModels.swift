@@ -14,14 +14,17 @@ enum Feed {
     enum Something {
         enum Request {
             case search(parameters: ConfigurationQuery)
+            case nextPage
         }
         enum Response {
             case presentPhotos(photos: [Photo])
+            case presentFooterLoader
             case presentError(error: Error)
         }
         enum ViewModel {
             case displayPhotosCell(photos: [PhotoDisplayCell])
             case displayError(error: String)
+            case displayFooterLoader
         }
     }
 }

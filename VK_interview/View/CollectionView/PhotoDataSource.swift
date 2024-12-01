@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Combine
 
 enum Section: Hashable {
     case main
@@ -13,9 +14,17 @@ enum Section: Hashable {
 
 final class PhotoDataSource: UICollectionViewDiffableDataSource<Section, PhotoDisplayCell> {
     
+    let isEndScroll = PassthroughSubject<Bool, Never>()
+    
     init(_ collectionView: UICollectionView) {
         super.init(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in
-            return collectionView.reuse(PhotoViewCell.self, with: itemIdentifier, indexPath)
+            collectionView.reuse(PhotoViewCell.self, with: itemIdentifier, indexPath)
+        }
+    }
+    
+    func registerFooter(_ view: UICollectionView.SupplementaryRegistration<LoadIndicatorView>) {
+        supplementaryViewProvider = { (collectionView, elementKind, indexPath) -> UICollectionReusableView? in
+            collectionView.dequeueConfiguredReusableSupplementary(using: view, for: indexPath)
         }
     }
     
@@ -36,6 +45,20 @@ extension PhotoDataSource: UICollectionViewDelegateFlowLayout {
         case .main:
             guard let model = itemIdentifier(for: indexPath) else { return .zero }
             return model.size.totalSize
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
+        CGSize(width: 50, height: 50)
+    }
+    
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        let offsetY = scrollView.contentOffset.y
+        let contentHeight = scrollView.contentSize.height
+        let height = scrollView.frame.size.height
+        
+        if (offsetY) > (contentHeight - height) {
+            isEndScroll.send(true)
         }
     }
     

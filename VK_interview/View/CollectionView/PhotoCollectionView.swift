@@ -6,8 +6,12 @@
 //
 
 import UIKit
+import Combine
 
 class PhotoCollectionView: UICollectionView {
+    
+    let isLoad = PassthroughSubject<Bool, Never>()
+    private var store: Set<AnyCancellable> = []
     
     // MARK: init
         
@@ -19,6 +23,14 @@ class PhotoCollectionView: UICollectionView {
         configuration()
     }
     
+    public func createRefreshControl() -> SupplementaryRegistration<LoadIndicatorView> {
+        UICollectionView.SupplementaryRegistration(elementKind: UICollectionView.elementKindSectionFooter) { supplementaryView, elementKind, indexPath in
+            self.isLoad.sink { value in
+                supplementaryView.isLoad(value)
+            }.store(in: &self.store)
+        }
+    }
+    
     required public init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -28,4 +40,6 @@ class PhotoCollectionView: UICollectionView {
     private func configuration() {
         allowsMultipleSelection = false
     }
+    
 }
+

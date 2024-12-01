@@ -9,9 +9,15 @@ import Foundation
 
 public struct ConfigurationQuery {
     let query: String
-    let color: String? = nil
-    var page: Int = 1
+    let color: String?
+    var page: Int
     let perPage = 30
+    
+    init(query: String, color: String? = nil, page: Int = 1) {
+        self.query = query
+        self.page = page
+        self.color = color
+    }
     
     private var search: String {
         let trimmedString = query.trimmingCharacters(in: .whitespaces)

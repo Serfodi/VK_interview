@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Combine
 
 protocol FeedDisplayLogic: AnyObject {
     @MainActor func displaySomething(viewModel: Feed.Something.ViewModel)
@@ -14,16 +15,19 @@ protocol FeedDisplayLogic: AnyObject {
 class FeedViewController: UIViewController, FeedDisplayLogic {
     
     var interactor: FeedBusinessLogic?
-    var router: (NSObjectProtocol & FeedRoutingLogic & FeedDataPassing)?
     
     let collectionView: PhotoCollectionView
     let dataSource : PhotoDataSource
+    let searchController: SearchViewController
+    
+    private var store: Set<AnyCancellable> = []
     
     // MARK: Object lifecycle
     
     init() {
         self.collectionView = .init()
         self.dataSource = .init(collectionView)
+        self.searchController = .init()
         super.init(nibName: nil, bundle: nil)
         setup()
     }
@@ -40,23 +44,11 @@ class FeedViewController: UIViewController, FeedDisplayLogic {
         let presenter = FeedPresenter()
         let router = FeedRouter()
         viewController.interactor = interactor
-        viewController.router = router
         interactor.presenter = presenter
         presenter.viewController = viewController
         router.viewController = viewController
-//        router.dataStore = interactor
     }
     
-    // MARK: Routing
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let scene = segue.identifier {
-            let selector = NSSelectorFromString("routeTo\(scene)WithSegue:")
-            if let router = router, router.responds(to: selector) {
-                router.perform(selector, with: segue)
-            }
-        }
-    }
     
     // MARK: View lifecycle
     
@@ -70,23 +62,36 @@ class FeedViewController: UIViewController, FeedDisplayLogic {
         super.viewDidLoad()
         collectionView.register(PhotoViewCell.self)
         collectionView.delegate = dataSource
-        doSomething()
+        dataSource.registerFooter(collectionView.createRefreshControl())
+        navigationItem.searchController = searchController
+        navigationItem.title = "Search".localized()
+        setupBindings()
     }
     
     // MARK: Do something
-    
-    func doSomething() {
-        let query = ConfigurationQuery(query: "cat")
-        interactor?.doSomething(request: .search(parameters: query))
-    }
-    
+        
     func displaySomething(viewModel: Feed.Something.ViewModel) {
         switch viewModel {
         case .displayPhotosCell(photos: let photos):
             dataSource.reload(photos)
+            collectionView.isLoad.send(false)
+        case .displayFooterLoader:
+            collectionView.isLoad.send(true)
         case .displayError(error: let error):
             print(error)
         }
+    }
+    
+    // MARK: Configuration
+    
+    func setupBindings() {
+        dataSource.isEndScroll.sink { [weak self] value in
+            self?.interactor?.doSomething(request: .nextPage)
+        }.store(in: &store)
+        
+        searchController.searchClicked.sink { [weak self] query in
+            self?.interactor?.doSomething(request: .search(parameters: query))
+        }.store(in: &store)
     }
     
 }
