@@ -11,7 +11,7 @@ import Foundation
 protocol PhotoCellSize {
     var imageViewFrame: CGRect { get }
     var descriptionLabelFrame: CGRect { get }
-    var viewInfo: CGRect { get }
+    var viewInfoFrame: CGRect { get }
     var profileViewFrame: CGRect { get }
     var totalSize: CGSize { get }
 }

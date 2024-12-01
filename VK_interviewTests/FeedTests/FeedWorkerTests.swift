@@ -32,13 +32,32 @@ class FeedWorkerTests: XCTestCase {
     
     // MARK: Test doubles
     
+    
+    
     // MARK: Tests
     
-    func testSomething() {
-        // Given
-        
-        // When
-        
-        // Then
+//    func testSomething() async throws {
+//        // Given
+//        let query = ConfigurationQuery(query: "cat")
+//        
+//        sut.fetcher = 
+//        
+//        // When
+//        let photo = try await sut.getPhotos(parameters: query)
+//        
+//        // Then
+//        XCTAssert(!photo.isEmpty)
+//    }
+    
+}
+
+// MARK: - MOCK
+
+class MockDataFetcher: DataFetcher {
+    var mockData: Photo!
+    
+    func getPhotos(parameters: [String : String]) async throws -> [Photo] {
+        [mockData]
     }
+    
 }

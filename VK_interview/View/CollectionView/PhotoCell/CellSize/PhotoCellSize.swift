@@ -16,10 +16,10 @@ protocol PhotoCellLayoutCalculateProtocol {
 final class CalculateCellSize: PhotoCellLayoutCalculateProtocol {
     
     struct Sizes: PhotoCellSize {
+        var profileViewFrame: CGRect
         var imageViewFrame: CGRect
         var descriptionLabelFrame: CGRect
-        var viewInfo: CGRect
-        var profileViewFrame: CGRect
+        var viewInfoFrame: CGRect
         var totalSize: CGSize
     }
     
@@ -40,15 +40,15 @@ final class CalculateCellSize: PhotoCellLayoutCalculateProtocol {
             descriptionFrame.origin = CGPoint(x: 0, y: photoFrame.maxY + StaticCellSize.padding2)
         }
         
-        let viewInfoFrame = CGRect(x: 0, y: max(descriptionFrame.maxY, photoFrame.maxY), width: width, height: StaticCellSize.infoHight)
-        let profileViewFrame = CGRect(x: 0, y: viewInfoFrame.maxY + StaticCellSize.padding2, width: width, height: StaticCellSize.profileImageHight)
+        let viewInfoFrame = CGRect(x: 0, y: max(descriptionFrame.maxY, photoFrame.maxY) + StaticCellSize.padding2, width: width, height: StaticCellSize.infoHight)
+        let profileFrame = CGRect(x: 0, y: viewInfoFrame.maxY + StaticCellSize.padding2, width: width, height: StaticCellSize.profileImageHight)
         
-        let totalHeight = profileViewFrame.maxY
+        let totalHeight = profileFrame.maxY
         
-        return Sizes(imageViewFrame: photoFrame,
+        return Sizes(profileViewFrame: profileFrame,
+                     imageViewFrame: photoFrame,
                      descriptionLabelFrame: descriptionFrame,
-                     viewInfo: viewInfoFrame,
-                     profileViewFrame: profileViewFrame,
+                    viewInfoFrame: viewInfoFrame,
                      totalSize: CGSize(width: width, height: totalHeight))
     }
 }
