@@ -6,6 +6,11 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		B02F22F02CFDF5DD001ED2ED /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = B02F22EF2CFDF5DD001ED2ED /* RealmSwift */; };
+		B02F22F12CFDF5DD001ED2ED /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = B02F22EF2CFDF5DD001ED2ED /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		B016EAF52CFC5947002588A8 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -22,6 +27,20 @@
 			remoteInfo = VK_interview;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		B02F22F22CFDF5DD001ED2ED /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				B02F22F12CFDF5DD001ED2ED /* RealmSwift in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		B016EADB2CFC5943002588A8 /* VK_interview.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VK_interview.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -65,6 +84,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B02F22F02CFDF5DD001ED2ED /* RealmSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -91,6 +111,7 @@
 				B016EADD2CFC5943002588A8 /* VK_interview */,
 				B016EAF72CFC5947002588A8 /* VK_interviewTests */,
 				B016EB012CFC5947002588A8 /* VK_interviewUITests */,
+				B02F22EE2CFDF5DD001ED2ED /* Frameworks */,
 				B016EADC2CFC5943002588A8 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -105,6 +126,13 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		B02F22EE2CFDF5DD001ED2ED /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -115,6 +143,7 @@
 				B016EAD72CFC5943002588A8 /* Sources */,
 				B016EAD82CFC5943002588A8 /* Frameworks */,
 				B016EAD92CFC5943002588A8 /* Resources */,
+				B02F22F22CFDF5DD001ED2ED /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -125,6 +154,7 @@
 			);
 			name = VK_interview;
 			packageProductDependencies = (
+				B02F22EF2CFDF5DD001ED2ED /* RealmSwift */,
 			);
 			productName = VK_interview;
 			productReference = B016EADB2CFC5943002588A8 /* VK_interview.app */;
@@ -208,6 +238,9 @@
 			);
 			mainGroup = B016EAD22CFC5943002588A8;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				B02F22EB2CFDF4EE001ED2ED /* XCRemoteSwiftPackageReference "realm-swift" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = B016EADC2CFC5943002588A8 /* Products */;
 			projectDirPath = "";
@@ -581,6 +614,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		B02F22EB2CFDF4EE001ED2ED /* XCRemoteSwiftPackageReference "realm-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/realm/realm-swift";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		B02F22EF2CFDF5DD001ED2ED /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B02F22EB2CFDF4EE001ED2ED /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = B016EAD32CFC5943002588A8 /* Project object */;
 }
