@@ -20,10 +20,11 @@ protocol PhotoCellSize {
 protocol PhotoDisplay {
     var imageURL: String { get }
     var description: String? { get }
-    var user: User { get }
     var size: PhotoCellSize { get }
     var date: Date { get }
     var like: Int { get }
+    var userImage: String { get }
+    var userName: String { get }
 }
 
 
@@ -31,7 +32,8 @@ struct PhotoDisplayCell: PhotoDisplay {
     var id: String
     var imageURL: String
     var description: String?
-    var user: User
+    var userImage: String
+    var userName: String
     var size: PhotoCellSize
     var date: Date
     var like: Int

@@ -15,9 +15,8 @@ class FeedPresenter: FeedPresentationLogic {
     
     weak var viewController: FeedDisplayLogic?
     
-    var calculate = CalculateCellSize()
-    
-    var photoDisplay = [PhotoDisplayCell]()
+    private let calculate = CalculateCellSize()
+    private var photoDisplay = [PhotoDisplayCell]()
     
     // MARK: Do something
     
@@ -31,10 +30,10 @@ class FeedPresenter: FeedPresentationLogic {
                 photoDisplay += photosCell
             }
             await viewController?.displaySomething(viewModel: .displayPhotosCell(photos: photoDisplay))
-        case .presentError(error: let error):
-            await viewController?.displaySomething(viewModel: .displayError(error: error.localizedDescription))
         case .presentFooterLoader:
             await viewController?.displaySomething(viewModel: .displayFooterLoader)
+        case .presentError(error: let error):
+            await viewController?.displaySomething(viewModel: .displayError(error: error.localizedDescription))
         }
     }
 }
@@ -60,14 +59,15 @@ private extension FeedPresenter {
     
     func convert(_ photo: Photo) -> PhotoDisplayCell {
         let size = calculate.sizes(description: photo.description, photo: CGSize(width: photo.width, height: photo.height))
-        let photoUrlString: String = photo.urls.small
+        let photoUrlString: String = photo.urls?.small ?? ""
         return PhotoDisplayCell(id: photo.id,
-                              imageURL: photoUrlString,
-                              description: photo.description,
-                              user: photo.user,
-                              size: size,
-                              date: photo.createdAt ?? Date(),
-                              like: photo.likes ?? 0)
+                                imageURL: photoUrlString,
+                                description: photo.description,
+                                userImage: photo.user?.profileImage.small ?? "",
+                                userName: photo.user?.username ?? "",
+                                size: size,
+                                date: photo.createdAt,
+                                like: photo.likes)
     }
     
 }

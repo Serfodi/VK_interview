@@ -18,7 +18,7 @@ public struct ConfigurationQuery {
         self.page = page
         self.color = color
     }
-    
+        
     private var search: String {
         let trimmedString = query.trimmingCharacters(in: .whitespaces)
         let replacedString = trimmedString.replacingOccurrences(of: " ", with: "+")

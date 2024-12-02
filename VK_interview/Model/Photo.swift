@@ -19,9 +19,9 @@ struct Photo: Decodable {
     let id: String
     let width: Int
     let height: Int
-    let createdAt: Date?
+    let createdAt: Date
     let description: String?
-    let user: User
-    let urls: UrlsSize
-    let likes: Int?
+    let user: User?
+    let urls: UrlsSize?
+    let likes: Int
 }

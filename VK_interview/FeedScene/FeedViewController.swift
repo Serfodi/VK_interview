@@ -86,8 +86,8 @@ class FeedViewController: UIViewController, FeedDisplayLogic {
         dataSource.isEndScroll
             .throttle(for: 0.5, scheduler: DispatchQueue.main, latest: true)
             .sink { [weak self] value in
-            self?.interactor?.doSomething(request: .nextPage)
-        }.store(in: &store)
+                self?.interactor?.doSomething(request: .nextPage)
+            }.store(in: &store)
         
         searchController.searchClicked.sink { [weak self] query in
             self?.interactor?.doSomething(request: .search(parameters: query))

@@ -43,7 +43,7 @@ class PhotoViewCell: UICollectionViewCell, SelfConfiguringCell {
         if let url = URL(string: photoDisplay.imageURL) {
             photoImageView.asyncSetImage(url: url)
         }
-        if let url = URL(string: photoDisplay.user.profileImage.small) {
+        if let url = URL(string: photoDisplay.userImage) {
             profileImageView.asyncSetImage(url: url)
         }
         
@@ -51,7 +51,7 @@ class PhotoViewCell: UICollectionViewCell, SelfConfiguringCell {
         descriptionLabel.text = photoDisplay.description
         likeLabel.text = "👍 \(photoDisplay.like)"
         dataLabel.text = photoDisplay.date.formateDate()
-        nameLabel.text = photoDisplay.user.username
+        nameLabel.text = photoDisplay.userName
         
         // frame
         photoImageView.frame = photoDisplay.size.imageViewFrame
