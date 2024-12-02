@@ -41,7 +41,7 @@ struct PhotoDisplayCell: PhotoDisplay {
 extension PhotoDisplayCell: Hashable {
     
     static func == (lhs: PhotoDisplayCell, rhs: PhotoDisplayCell) -> Bool {
-        lhs.id == rhs.id
+        lhs.size.totalSize == rhs.size.totalSize && lhs.id == rhs.id
     }
     
     func hash(into hasher: inout Hasher) {

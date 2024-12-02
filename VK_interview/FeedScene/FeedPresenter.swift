@@ -8,42 +8,58 @@
 import UIKit
 
 protocol FeedPresentationLogic {
-    func presentSomething(response: Feed.Something.Response)
+    func presentSomething(response: Feed.Something.Response) async
 }
 
 class FeedPresenter: FeedPresentationLogic {
     
     weak var viewController: FeedDisplayLogic?
     
+    var calculate = CalculateCellSize()
+    
+    var photoDisplay = [PhotoDisplayCell]()
+    
     // MARK: Do something
     
-    func presentSomething(response: Feed.Something.Response) {
+    func presentSomething(response: Feed.Something.Response) async {
         switch response {
-        case .presentPhotos(photos: let photos):
-            let photosCell = prepareMedia(photos)
-            Task {
-                await viewController?.displaySomething(viewModel: .displayPhotosCell(photos: photosCell))
+        case .presentPhotos(photos: let photos, new: let new):
+            let photosCell = await prepareMedia(photos)
+            if new {
+                photoDisplay = photosCell
+            } else {
+                photoDisplay += photosCell
             }
+            await viewController?.displaySomething(viewModel: .displayPhotosCell(photos: photoDisplay))
         case .presentError(error: let error):
-            Task {
-                await viewController?.displaySomething(viewModel: .displayError(error: error.localizedDescription))
-            }
+            await viewController?.displaySomething(viewModel: .displayError(error: error.localizedDescription))
         case .presentFooterLoader:
-            Task {
-                await viewController?.displaySomething(viewModel: .displayFooterLoader)
-            }
+            await viewController?.displaySomething(viewModel: .displayFooterLoader)
         }
     }
 }
 
 private extension FeedPresenter {
-    
-    func prepareMedia(_ photos: [Photo]) -> [PhotoDisplayCell] {
-        photos.map(convert)
+        
+    func prepareMedia(_ photos: [Photo]) async -> [PhotoDisplayCell] {
+        await withTaskGroup(of: PhotoDisplayCell?.self) { group in
+            for photo in photos {
+                group.addTask {
+                    self.convert(photo)
+                }
+            }
+            var results: [PhotoDisplayCell] = []
+            for await result in group {
+                if let cell = result {
+                    results.append(cell)
+                }
+            }
+            return results
+        }
     }
     
-    func convert(from photo: Photo) -> PhotoDisplayCell {
-        let size = CalculateCellSize().sizes(description: photo.description, photo: CGSize(width: photo.width, height: photo.height))
+    func convert(_ photo: Photo) -> PhotoDisplayCell {
+        let size = calculate.sizes(description: photo.description, photo: CGSize(width: photo.width, height: photo.height))
         let photoUrlString: String = photo.urls.small
         return PhotoDisplayCell(id: photo.id,
                               imageURL: photoUrlString,

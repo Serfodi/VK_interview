@@ -78,14 +78,14 @@ class FeedViewController: UIViewController, FeedDisplayLogic {
         case .displayFooterLoader:
             collectionView.isLoad.send(true)
         case .displayError(error: let error):
-            print(error)
+            self.showAlert(with: "Error".localized(), and: error)
         }
     }
     
-    // MARK: Configuration
-    
     func setupBindings() {
-        dataSource.isEndScroll.sink { [weak self] value in
+        dataSource.isEndScroll
+            .throttle(for: 0.5, scheduler: DispatchQueue.main, latest: true)
+            .sink { [weak self] value in
             self?.interactor?.doSomething(request: .nextPage)
         }.store(in: &store)
         

@@ -11,6 +11,23 @@ protocol FeedBusinessLogic {
     func doSomething(request: Feed.Something.Request)
 }
 
+actor Repository {
+    
+    private var dataPhoto: [Photo] = []
+    
+    func setItems(_ items: [Photo]) {
+        dataPhoto = items
+    }
+    
+    func addItem(_ items: [Photo]) {
+        dataPhoto += items
+    }
+    
+    func getItems() -> [Photo] {
+        dataPhoto
+    }
+    
+}
 
 class FeedInteractor: FeedBusinessLogic {
     
@@ -21,7 +38,7 @@ class FeedInteractor: FeedBusinessLogic {
     
     var query: ConfigurationQuery? = nil
     
-    var dataPhoto: [Photo] = []
+    var repo = Repository()
     
     // MARK: Do something
     
@@ -31,37 +48,30 @@ class FeedInteractor: FeedBusinessLogic {
         switch request {
         case .search(parameters: let parameters):
             query = parameters
-            Task(priority: .userInitiated) {
+            Task {
                 do {
                     let photos = try await worker.getPhotos(parameters: parameters)
-                    
-                    // load photos into Repository for cash
-                    
-                    self.dataPhoto = photos
-                    
-                    self.presenter?.presentSomething(response: .presentPhotos(photos: photos))
+                    await self.presenter?.presentSomething(response: .presentPhotos(photos: photos))
+                    await self.repo.setItems(photos)
                 } catch {
-                    self.presenter?.presentSomething(response: .presentError(error: error))
+                    await self.presenter?.presentSomething(response: .presentError(error: error))
                 }
             }
         case .nextPage:
             guard query != nil else { return }
             query!.page += 1
-            self.presenter?.presentSomething(response: .presentFooterLoader)
-            Task(priority: .userInitiated) {
+            Task {
+                await self.presenter?.presentSomething(response: .presentFooterLoader)
+            }
+            Task {
                 do {
-                    let photos = try await worker.getPhotos(parameters: query!)
-                    
-                    // load photos into Repository for cash
-                    
-                    self.dataPhoto += photos
-                    
-                    self.presenter?.presentSomething(response: .presentPhotos(photos: dataPhoto))
+                    let newPhotos = try await worker.getPhotos(parameters: query!)
+                    await self.presenter?.presentSomething(response: .presentPhotos(photos: newPhotos, new: false))
+                    await self.repo.addItem(newPhotos)
                 } catch {
-                    self.presenter?.presentSomething(response: .presentError(error: error))
+                    await self.presenter?.presentSomething(response: .presentError(error: error))
                 }
             }
         }
-        
     }
 }

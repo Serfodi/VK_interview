@@ -17,7 +17,7 @@ enum Feed {
             case nextPage
         }
         enum Response {
-            case presentPhotos(photos: [Photo])
+            case presentPhotos(photos: [Photo], new: Bool = true)
             case presentFooterLoader
             case presentError(error: Error)
         }
