@@ -10,9 +10,9 @@ import RealmSwift
 
 
 protocol Repository {
-    func getPhotos(query key: String) -> [Photo]?
+    func getPhotos(query key: String) async throws -> [Photo]?
     func savePhotos(query: String, _ data: [Photo]) async
-    func clearAirportList() async
+    func clearAll() async
 }
 
 final class PhotoRepository: Repository {
@@ -23,20 +23,19 @@ final class PhotoRepository: Repository {
         self.storage = storage
     }
     
-    func getPhotos(query key: String) -> [Photo]? {
-        let data = storage.fetch(ofType: EntityQuery.self, forPrimaryKey: key)
-        guard let photos = (data.map { $0.photos }) else { return nil }
-        return photos.map { Photo($0) }
+    func getPhotos(query key: String) async throws -> [Photo]? {
+        let data = try await storage.get(ofType: EntityQuery.self, forPrimaryKey: key)
+        return data?.photos.map { Photo($0) }
     }
     
     func savePhotos(query: String, _ data: [Photo]) async {
         let objects = data.map(EntityPhoto.init)
-        let query = EntityQuery(query: query, photos: objects)
-        try? storage.asyncSaveObject(object: query)
+        let obj = EntityQuery(query: query, photos: objects)
+        try? await storage.save(object: obj)
     }
-    
-    func clearAirportList() async {
-        try? storage.deleteAll()
+
+    func clearAll() async {
+        try? await storage.deleteAll()
     }
     
 }

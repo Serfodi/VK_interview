@@ -13,7 +13,6 @@ struct User: Decodable {
         let small: String
     }
         
-    let id: String
     let username: String
     let profileImage: ProfileImageSize
     

@@ -12,8 +12,6 @@ struct Photo: Decodable {
     struct UrlsSize: Decodable {
         let small: String
         let regular: String
-        let full: String
-        let thumb: String
     }
     
     let id: String

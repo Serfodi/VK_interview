@@ -8,37 +8,32 @@
 import Foundation
 import RealmSwift
 
-final class StorageService {
+final actor StorageService {
     
-    private let storage: Realm?
+    private let configuration: Realm.Configuration
     
     init(_ configuration: Realm.Configuration = Realm.Configuration(inMemoryIdentifier: "inMemory")) {
-        self.storage = try? Realm(configuration: configuration)
+        self.configuration = configuration
     }
     
-    func asyncSaveObject(object: Object) throws {
-        guard let storage else { return }
-        storage.writeAsync {
-            storage.add(object, update: .all)
-        }
-    }
-    
-    func delete(object: Object) throws {
-        guard let storage else { return }
+    func save(object: Object) throws {
+        let storage = try Realm(configuration: configuration)
+        let hasPrimaryKey = object.objectSchema.primaryKeyProperty != nil
         try storage.write {
-            storage.delete(object)
+            hasPrimaryKey ? storage.add(object, update: .modified) : storage.add(object)
         }
+    }
+    
+    func get<Element, KeyType>(ofType type: Element.Type, forPrimaryKey key: KeyType) throws -> Element? where Element : Object {
+        let storage = try Realm(configuration: configuration)
+        return storage.object(ofType: type, forPrimaryKey: key)
     }
     
     func deleteAll() throws {
-        guard let storage else { return }
+        let storage = try Realm(configuration: configuration)
         try storage.write {
             storage.deleteAll()
         }
-    }
-         
-    func fetch<Element, KeyType>(ofType type: Element.Type, forPrimaryKey key: KeyType) -> Element? where Element : Object {
-        storage?.object(ofType: type, forPrimaryKey: key)
     }
     
 }

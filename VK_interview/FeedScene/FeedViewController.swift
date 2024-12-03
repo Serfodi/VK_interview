@@ -70,15 +70,19 @@ class FeedViewController: UIViewController, FeedDisplayLogic {
     
     // MARK: Do something
         
+    var start = Date()
+    
     func displaySomething(viewModel: Feed.Something.ViewModel) {
         switch viewModel {
         case .displayPhotosCell(photos: let photos):
+            print(Date().timeIntervalSince(start))
             dataSource.reload(photos)
             collectionView.isLoad.send(false)
         case .displayFooterLoader:
             collectionView.isLoad.send(true)
         case .displayError(error: let error):
             self.showAlert(with: "Error".localized(), and: error)
+            print(error)
         }
     }
     
@@ -90,6 +94,7 @@ class FeedViewController: UIViewController, FeedDisplayLogic {
             }.store(in: &store)
         
         searchController.searchClicked.sink { [weak self] query in
+            self?.start = Date()
             self?.interactor?.doSomething(request: .search(parameters: query))
         }.store(in: &store)
     }

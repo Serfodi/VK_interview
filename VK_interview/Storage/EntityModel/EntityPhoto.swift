@@ -8,22 +8,18 @@
 import Foundation
 import RealmSwift
 
+// fix it
 class EntityPhoto: Object {
     @Persisted(primaryKey: true) var id: String
     @Persisted var width: Int
     @Persisted var height: Int
     @Persisted var createdAt: Date
     @Persisted var photoDescription: String?
-    @Persisted var user: EntityUser?
-    @Persisted var urls: EntityUrlsSize?
     @Persisted var likes: Int
-}
-
-class EntityUrlsSize: Object, Decodable {
-    @Persisted var small: String
-    @Persisted var regular: String
-    @Persisted var full: String
-    @Persisted var thumb: String
+    @Persisted var smallImage: String
+    @Persisted var regularImage: String
+    @Persisted var username: String
+    @Persisted var profileImage: String
 }
 
 // MARK: - Entity Photo
@@ -36,27 +32,11 @@ extension EntityPhoto {
         height = photo.height
         createdAt = photo.createdAt
         photoDescription = photo.description
-        if let userPhoto = photo.user {
-            self.user = EntityUser(userPhoto)
-        } else {
-            self.user = nil
-        }
-        if let urlPhoto = photo.user {
-            urls = EntityUrlsSize(value: urlPhoto)
-        } else {
-            urls = nil
-        }
+        username = photo.user?.username ?? ""
+        profileImage = photo.user?.profileImage.small ?? ""
+        smallImage = photo.urls?.small ?? ""
+        regularImage = photo.urls?.regular ?? ""
         likes = photo.likes
-    }
-}
-
-extension EntityUrlsSize {
-    convenience init(_ urlsSize: Photo.UrlsSize) {
-        self.init()
-        small = urlsSize.small
-        regular = urlsSize.regular
-        full = urlsSize.full
-        thumb = urlsSize.thumb
     }
 }
 
@@ -70,21 +50,10 @@ extension Photo {
         self.height = entity.height
         self.createdAt = entity.createdAt
         self.description = entity.photoDescription
-        if let user = entity.user {
-            self.user = User(user)
-        } else {
-            self.user = nil
-        }
-        if let urlPhoto = entity.urls {
-            self.urls = Photo.UrlsSize(
-                small: urlPhoto.small,
-                regular: urlPhoto.regular,
-                full: urlPhoto.full,
-                thumb: urlPhoto.thumb
-            )
-        } else {
-            self.urls = nil
-        }
+        self.user = User(username: entity.username,
+                         profileImage: User.ProfileImageSize(small: entity.profileImage))
+        self.urls = UrlsSize(small: entity.smallImage,
+                             regular: entity.regularImage)
         self.likes = entity.likes
     }
     
