@@ -8,14 +8,13 @@
 import Foundation
 import RealmSwift
 
-
 protocol Repository {
     func getPhotos(query key: String) async throws -> [Photo]?
     func savePhotos(query: String, _ data: [Photo]) async
     func clearAll() async
 }
 
-final class PhotoRepository: Repository {
+class PhotoRepository: Repository {
     
     private let storage: StorageService
     

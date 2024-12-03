@@ -15,8 +15,8 @@ class FeedPresenter: FeedPresentationLogic {
     
     weak var viewController: FeedDisplayLogic?
     
-    private let calculate = CalculateCellSize()
-    private var photoDisplay = [PhotoDisplayCell]()
+    let calculate = CalculateCellSize()
+    var photoDisplay = [PhotoDisplayCell]()
     
     // MARK: Do something
     

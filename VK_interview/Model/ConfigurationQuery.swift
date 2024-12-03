@@ -33,4 +33,8 @@ public struct ConfigurationQuery {
         return parameters
     }
     
+    var generateKey: String {
+        query + String(page) + (color ?? "")
+    }
+    
 }

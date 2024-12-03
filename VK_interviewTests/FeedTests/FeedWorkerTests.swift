@@ -32,32 +32,59 @@ class FeedWorkerTests: XCTestCase {
     
     // MARK: Test doubles
     
+    class MockDataFetcher: DataFetcher {
+        func getPhotos(parameters: [String : String]) async throws -> [Photo] {
+            [MockData.mockPhoto, MockData.mockPhoto]
+        }
+    }
     
+    class MockPhotoRepository: PhotoRepository {
+        
+        var store: [String:[Photo]] = [:]
+        
+        override func getPhotos(query key: String) async throws -> [Photo]? {
+            store[key]
+        }
+        
+        override func savePhotos(query: String, _ data: [Photo]) async {
+            store[query] = data
+        }
+    }
     
     // MARK: Tests
     
-//    func testSomething() async throws {
-//        // Given
-//        let query = ConfigurationQuery(query: "cat")
-//        
-//        sut.fetcher = 
-//        
-//        // When
-//        let photo = try await sut.getPhotos(parameters: query)
-//        
-//        // Then
-//        XCTAssert(!photo.isEmpty)
-//    }
+    func testGetPhotosFromFetchData() async throws {
+        // Given
+        let query = ConfigurationQuery(query: "cat")
+        
+        sut.fetcher = MockDataFetcher()
+        sut.repository = MockPhotoRepository()
+        
+        // When
+        let photo = try await sut.getPhotos(parameters: query)
+        
+        // Then
+        XCTAssertEqual(photo.count, 2, "The photo must be uploaded from the network")
+    }
     
-}
-
-// MARK: - MOCK
-
-class MockDataFetcher: DataFetcher {
-    var mockData: Photo!
-    
-    func getPhotos(parameters: [String : String]) async throws -> [Photo] {
-        [mockData]
+    func testGetPhotosFromRepository() async throws {
+        // Given
+        let query = ConfigurationQuery(query: "cat")
+        let photos = [MockData.mockPhoto]
+        
+        let repo = MockPhotoRepository()
+        repo.store[query.generateKey] = photos
+        
+        sut.fetcher = MockDataFetcher()
+        sut.repository = repo
+        
+        // When
+        let photo = try await sut.getPhotos(parameters: query)
+        
+        // Then
+        XCTAssertEqual(photo.count, 1, "The photo must be uploaded from the storage")
     }
     
 }
+ 
+ 

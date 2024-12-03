@@ -19,10 +19,9 @@ class FeedWorker {
     
     func getPhotos(parameters: ConfigurationQuery) async throws -> [Photo] {
         let query = parameters.requestParameters
-        // fix it
-        let queryName = parameters.query + String(parameters.page) + (parameters.color ?? "")
+        let key = parameters.generateKey
         
-        if let data = try await repository.getPhotos(query: queryName) {
+        if let data = try await repository.getPhotos(query: key) {
             return data
         }
         
@@ -30,7 +29,7 @@ class FeedWorker {
         
         Task.detached(priority: .low) {
             print("start")
-            await self.repository.savePhotos(query: queryName, photo)
+            await self.repository.savePhotos(query: key, photo)
             print("end")
         }
         

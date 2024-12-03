@@ -26,41 +26,8 @@ final class NetworkDataFetcherTests: XCTestCase {
     }
     
     func testGetPhotosReturnsPhotos() async throws {
-        let expectedUser = User(id: "1", username: "bar", profileImage: .init(small: "small"), links: nil, instagramUsername: nil, twitterUsername: nil)
-        let expectedPhotos = [Photo(id: "1",
-                                    width: 100, height: 100,
-                                    createdAt: Date(timeIntervalSince1970: 100),
-                                    description: "foo", user: expectedUser,
-                                    urls: .init(small: "small", regular: "regular", full: "full", thumb: "thumb"),
-                                    likes: 100)]
-        let jsonData =
-                """
-                {
-                    "results": [
-                        {
-                              "id": "1",
-                              "created_at": "1970-01-01T00:01:40Z",
-                              "width": 100,
-                              "height": 100,
-                              "likes": 100,
-                              "description": "foo",
-                              "user": {
-                                "id": "1",
-                                "username": "bar",
-                                "profile_image": {
-                                  "small": "small",
-                                }
-                              },
-                              "urls": {
-                                "full": "full",
-                                "regular": "regular",
-                                "small": "small",
-                                "thumb": "thumb"
-                              }
-                            }
-                    ]
-                }
-                """.data(using: .utf8)
+        let expectedPhotos = [MockData.mockPhoto]
+        let jsonData = MockData.mockJson
         
         mockNetworkingService.mockData = jsonData
         let photos = try await sut.getPhotos(parameters: [:])
