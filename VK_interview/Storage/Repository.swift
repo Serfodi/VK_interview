@@ -12,6 +12,7 @@ protocol Repository {
     func getPhotos(query key: String) async throws -> [Photo]?
     func savePhotos(query: String, _ data: [Photo]) async
     func clearAll() async
+    func isDataClear() async -> Bool
 }
 
 class PhotoRepository: Repository {
@@ -35,6 +36,11 @@ class PhotoRepository: Repository {
 
     func clearAll() async {
         try? await storage.deleteAll()
+    }
+    
+    func isDataClear() async -> Bool {
+        let isClear = try? await storage.isDataClear(ofType: EntityQuery.self)
+        return isClear ?? true
     }
     
 }

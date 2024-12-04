@@ -42,6 +42,7 @@ final class SearchDataSours: UITableViewDiffableDataSource<SearchSection, Search
             case .color(let colorItem):
                 content.image = StaticImage.colorIcon?.withTintColor(colorItem.color, renderingMode: .alwaysOriginal)
                 content.text = colorItem.title
+                cell.accessibilityLabel = colorItem.title + " " + "Color".localized()
             }
             cell.contentConfiguration = content
             return cell

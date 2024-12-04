@@ -49,6 +49,11 @@ class FeedInteractor: FeedBusinessLogic {
                     await self.presenter?.presentSomething(response: .presentError(error: error))
                 }
             }
+        case .clearStore:
+            Task {
+                await self.worker.clearRepository()
+                await self.presenter?.presentSomething(response: .presentAlert(header: "It's clear!".localized(), text: "All cache has been deleted".localized()))
+            }
         }
     }
 }

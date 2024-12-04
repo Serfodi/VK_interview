@@ -27,6 +27,7 @@ class PhotoViewCell: UICollectionViewCell, SelfConfiguringCell {
         clipsToBounds = true
         configuration()
         configurationFrame()
+        accessibility()
     }
     
     required init?(coder: NSCoder) {
@@ -58,6 +59,8 @@ class PhotoViewCell: UICollectionViewCell, SelfConfiguringCell {
         descriptionLabel.frame = photoDisplay.size.descriptionLabelFrame
         infoStack.frame = photoDisplay.size.viewInfoFrame
         profileStack.frame = photoDisplay.size.profileViewFrame
+        
+        accessibility()
     }
     
     override func prepareForReuse() {
@@ -66,11 +69,26 @@ class PhotoViewCell: UICollectionViewCell, SelfConfiguringCell {
         profileImageView.cancelDownload()
     }
     
+    private func accessibility() {
+        var description: String? = nil
+        if let text = descriptionLabel.text, !text.isEmpty {
+            description = "\("WriteDescription".localized()): \(text)."
+        }
+        accessibilityLabel = [
+            nameLabel.text,
+            "took the photo on".localized(),
+            dataLabel.text,
+            description,
+            "\(photoDisplay?.like ?? 0) " + "liked".localized()
+        ].compactMap{$0}.joined(separator: " ")
+    }
+    
 }
 
 private extension PhotoViewCell {
     
     func configuration() {
+        isAccessibilityElement = true
         photoImageView.contentMode = .scaleAspectFill
         photoImageView.clipsToBounds = true
         photoImageView.layer.cornerRadius = 13

@@ -64,7 +64,7 @@ class FeedViewController: UIViewController, FeedDisplayLogic {
         collectionView.delegate = dataSource
         dataSource.registerFooter(collectionView.createRefreshControl())
         navigationItem.searchController = searchController
-        navigationItem.title = "Search".localized()
+        configuration()
         setupBindings()
     }
     
@@ -75,23 +75,62 @@ class FeedViewController: UIViewController, FeedDisplayLogic {
         case .displayPhotosCell(photos: let photos):
             dataSource.reload(photos)
             collectionView.isLoad.send(false)
+            UIAccessibility.post(notification: .pageScrolled, argument: "New photos have been uploaded".localized())
+            photos.isEmpty ? contentShowSearch() : contentHideAll()
         case .displayFooterLoader:
             collectionView.isLoad.send(true)
-        case .displayError(error: let error):
-            self.showAlert(with: "Error".localized(), and: error)
+        case .displayAlert(header: let head, text: let text):
+            self.showAlert(with: head, and: text)
         }
     }
     
-    func setupBindings() {
+    private func setupBindings() {
+        searchController.searchClicked
+            .sink { [weak self] query in
+                self?.dataSource.reload([], animated: false)
+                self?.contentShowLoading()
+                self?.interactor?.doSomething(request: .search(parameters: query))
+            }.store(in: &store)
+        
         dataSource.isEndScroll
             .throttle(for: 0.5, scheduler: DispatchQueue.main, latest: true)
             .sink { [weak self] value in
                 self?.interactor?.doSomething(request: .nextPage)
             }.store(in: &store)
         
-        searchController.searchClicked.sink { [weak self] query in
-            self?.interactor?.doSomething(request: .search(parameters: query))
-        }.store(in: &store)
+        NotificationCenter.default.publisher(for: .footerButtonTapped)
+            .throttle(for: 1, scheduler: DispatchQueue.main, latest: true)
+            .sink { [weak self] _ in
+                self?.interactor?.doSomething(request: .nextPage)
+            }.store(in: &store)
+    }
+    
+    private func configuration() {
+        navigationItem.title = "Search".localized()
+        navigationItem.title?.isAccessibilityElement = false
+        navigationItem.leftBarButtonItem = .init(image: StaticImage.store, style: .done, target: self, action: #selector(clearButton))
+        navigationItem.leftBarButtonItem?.accessibilityLabel = "Delete cache".localized()
+        contentShowFirst()
+        #if DEBUG
+        createFPS()
+        #endif
+    }
+    
+    @objc func clearButton() {
+        self.interactor?.doSomething(request: .clearStore)
     }
     
 }
+
+#if DEBUG
+extension FeedViewController {
+    func createFPS() {
+        let fpsView = FPSView(frame: .zero)
+        self.view.addSubview(fpsView)
+        fpsView.translatesAutoresizingMaskIntoConstraints = false
+        fpsView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor).isActive = true
+        fpsView.leftAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leftAnchor).isActive = true
+        fpsView.startFPS()
+    }
+}
+#endif

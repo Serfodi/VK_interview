@@ -33,7 +33,9 @@ class FeedPresenter: FeedPresentationLogic {
         case .presentFooterLoader:
             await viewController?.displaySomething(viewModel: .displayFooterLoader)
         case .presentError(error: let error):
-            await viewController?.displaySomething(viewModel: .displayError(error: error.localizedDescription))
+            await viewController?.displaySomething(viewModel: .displayAlert(header: "Error".localized(), text: error.localizedDescription))
+        case .presentAlert(header: let header, text: let text):
+            await viewController?.displaySomething(viewModel: .displayAlert(header: header, text: text))
         }
     }
 }

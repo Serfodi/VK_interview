@@ -14,7 +14,7 @@ protocol Networking {
 final class NetworkService: Networking {
     
     func request(path: String, params: [String : String]) async throws -> Data {
-        let url = self.url(path: path, params: params)
+        let url = try url(path: path, params: params)
         var request = URLRequest(url: url)
         request.allHTTPHeaderFields = ["Authorization": "Client-ID \(API.accessKey)"]
         let (data, response) = try await URLSession.shared.data(for: request)
@@ -22,7 +22,7 @@ final class NetworkService: Networking {
         return data
     }
     
-    private func url(path: String, params: [String:String]) -> URL {
+    private func url(path: String, params: [String:String]) throws -> URL {
         var components = URLComponents()
         components.scheme = API.scheme
         components.host = API.host
@@ -30,7 +30,8 @@ final class NetworkService: Networking {
         if !params.isEmpty {
             components.queryItems = params.map{ URLQueryItem(name: $0, value: $1) }
         }
-        return components.url!
+        guard let url = components.url else { throw NetworkError.invalidURL }
+        return url
     }
     
     private func statusCode(_ response: URLResponse) throws {

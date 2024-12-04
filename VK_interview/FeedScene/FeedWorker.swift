@@ -27,14 +27,19 @@ class FeedWorker {
         
         let photo = try await fetcher.getPhotos(parameters: query)
         
-        Task.detached(priority: .low) {
-            print("start")
+        Task.detached(priority: .background) {
             await self.repository.savePhotos(query: key, photo)
-            print("end")
         }
         
         return photo
     }
     
+    func clearRepository() async {
+        await repository.clearAll()
+    }
+    
+    func isClear() async -> Bool {
+        await repository.isDataClear()
+    }
     
 }

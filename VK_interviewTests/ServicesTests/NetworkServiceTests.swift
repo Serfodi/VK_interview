@@ -28,5 +28,5 @@ final class NetworkServiceTests: XCTestCase {
         let data = try await sut.request(path: path, params: parameters)
         XCTAssertNotNil(data)
     }
-
+    
 }

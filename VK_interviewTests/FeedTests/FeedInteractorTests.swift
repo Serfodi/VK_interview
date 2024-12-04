@@ -41,6 +41,7 @@ class FeedInteractorTests: XCTestCase {
         var isLoadShow = false
         var isLoadHide = false
         var isNew: Bool? = nil
+        var alert: Bool = false
         
         func presentSomething(response: Feed.Something.Response) {
             presentSomethingCalled = true
@@ -53,6 +54,8 @@ class FeedInteractorTests: XCTestCase {
                 self.error = error
             case .presentFooterLoader:
                 isLoadShow = true
+            case .presentAlert(header: let header, text: let text):
+                alert = true
             }
         }
     }

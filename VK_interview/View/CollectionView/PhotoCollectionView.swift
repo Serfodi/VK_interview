@@ -39,6 +39,7 @@ class PhotoCollectionView: UICollectionView {
     
     private func configuration() {
         allowsMultipleSelection = false
+        isAccessibilityElement = false
     }
     
 }

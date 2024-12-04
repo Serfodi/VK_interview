@@ -36,4 +36,10 @@ final actor StorageService {
         }
     }
     
+    func isDataClear<Element: Object>(ofType type: Element.Type) throws -> Bool {
+        let storage = try Realm(configuration: configuration)
+        let data = storage.objects(type)
+        return data.isEmpty
+    }
+    
 }

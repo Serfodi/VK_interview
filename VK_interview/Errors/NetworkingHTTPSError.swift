@@ -7,6 +7,12 @@
 
 import Foundation
 
+enum NetworkError: Error {
+    case invalidURL
+    case invalidResponse
+    case requestFailed(statusCode: Int)
+}
+
 enum HTTPStatusCode: Int, Error, LocalizedError {
     case badRequest = 400
     case unauthorized = 401

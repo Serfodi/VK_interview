@@ -23,5 +23,5 @@ final class DownloadImageTests: XCTestCase {
         let image = try await DownloadImage().load(url: url)
         XCTAssertNotNil(image, "image dont load")
     }
-
+    
 }

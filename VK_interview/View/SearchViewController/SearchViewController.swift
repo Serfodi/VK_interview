@@ -84,6 +84,8 @@ extension SearchViewController: UISearchBarDelegate {
         let parameters = ConfigurationQuery(query: text, color: getToken())
         searchClicked.send(parameters)
         
+        self.isActive = false
+        
         searchTable.addItemHistory(text: text)
         searchTable.reload()
     }

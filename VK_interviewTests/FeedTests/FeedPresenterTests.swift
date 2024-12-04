@@ -35,7 +35,7 @@ class FeedPresenterTests: XCTestCase {
     class FeedDisplayLogicSpy: FeedDisplayLogic {
         var displaySomethingCalled = false
         var photoDisplayCell: [PhotoDisplayCell] = []
-        var error: String? = nil
+        var error: Bool = false
         var isLoadShow = false
         
         func displaySomething(viewModel: Feed.Something.ViewModel) {
@@ -43,8 +43,8 @@ class FeedPresenterTests: XCTestCase {
             switch viewModel {
             case .displayPhotosCell(photos: let photos):
                 photoDisplayCell = photos
-            case .displayError(error: let error):
-                self.error = error
+            case .displayAlert(header: let header, text: let text):
+                self.error = header == "Error".localized()
             case .displayFooterLoader:
                 self.isLoadShow = true
             }
