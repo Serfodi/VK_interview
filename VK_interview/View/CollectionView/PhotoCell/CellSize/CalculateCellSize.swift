@@ -1,5 +1,5 @@
 //
-//  PhotoCellSize.swift
+//  CalculateCellSize.swift
 //  VK_interview
 //
 //  Created by Сергей Насыбуллин on 01.12.2024.

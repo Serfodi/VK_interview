@@ -22,7 +22,7 @@ final class NetworkServiceTests: XCTestCase {
         super.tearDown()
     }
 
-    func testRequestReturnsData() async throws {
+    func testRequestReturnsDataFromApi() async throws {
         let parameters = ["query":"office"]
         let path = API.searchPhotos
         let data = try await sut.request(path: path, params: parameters)

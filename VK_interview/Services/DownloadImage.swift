@@ -18,7 +18,7 @@ class DownloadImage {
         }
         
         let (data, response) = try await URLSession.shared.data(from: url)
-        guard let responseURL = response.url, let image = UIImage(data: data) else { return nil }
+        guard let _ = response.url, let image = UIImage(data: data) else { return nil }
         
         let cachedResponse = CachedURLResponse(response: response, data: data)
         

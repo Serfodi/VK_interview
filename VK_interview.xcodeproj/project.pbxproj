@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		B02F22F02CFDF5DD001ED2ED /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = B02F22EF2CFDF5DD001ED2ED /* RealmSwift */; };
 		B02F22F12CFDF5DD001ED2ED /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = B02F22EF2CFDF5DD001ED2ED /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		B0BBDAA82D020D920011426A /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = B0BBDAA72D020D920011426A /* RealmSwift */; };
+		B0BBDAA92D020D920011426A /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = B0BBDAA72D020D920011426A /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,6 +38,17 @@
 			dstSubfolderSpec = 10;
 			files = (
 				B02F22F12CFDF5DD001ED2ED /* RealmSwift in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B0BBDAAA2D020D920011426A /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				B0BBDAA92D020D920011426A /* RealmSwift in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -92,6 +105,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B0BBDAA82D020D920011426A /* RealmSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -167,6 +181,7 @@
 				B016EAF02CFC5947002588A8 /* Sources */,
 				B016EAF12CFC5947002588A8 /* Frameworks */,
 				B016EAF22CFC5947002588A8 /* Resources */,
+				B0BBDAAA2D020D920011426A /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -178,6 +193,7 @@
 			);
 			name = VK_interviewTests;
 			packageProductDependencies = (
+				B0BBDAA72D020D920011426A /* RealmSwift */,
 			);
 			productName = VK_interviewTests;
 			productReference = B016EAF42CFC5947002588A8 /* VK_interviewTests.xctest */;
@@ -637,6 +653,11 @@
 
 /* Begin XCSwiftPackageProductDependency section */
 		B02F22EF2CFDF5DD001ED2ED /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B02F22EB2CFDF4EE001ED2ED /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
+		};
+		B0BBDAA72D020D920011426A /* RealmSwift */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = B02F22EB2CFDF4EE001ED2ED /* XCRemoteSwiftPackageReference "realm-swift" */;
 			productName = RealmSwift;

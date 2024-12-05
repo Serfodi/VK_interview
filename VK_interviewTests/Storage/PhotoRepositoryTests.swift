@@ -23,25 +23,25 @@ final class PhotoRepositoryTests: XCTestCase {
         super.tearDown()
     }
 
-//    func testSave() async throws {
-//        let key = "cat"
-//        let photos = [MockData.mockPhoto]
-//        
-//        var config = Realm.Configuration()
-//        config.inMemoryIdentifier = self.name
-//        let sut = PhotoRepository(storage: StorageService(config ))
-//
-//        await sut.savePhotos(query: key, photos)
-//        
-//        let getPhotos = try await sut.getPhotos(query: key)
-//        
-//        XCTAssertEqual(photos[0].id, getPhotos?[0].id)
-//        
-//        await sut.clearAll()
-//        
-//        let getPhotosClear = try await sut.getPhotos(query: key)
-//        
-//        XCTAssertNil(getPhotosClear)
-//    }
+    func testSave() async throws {
+        let key = "cat"
+        let photos = [MockData.mockPhoto]
+        
+        var config = Realm.Configuration()
+        config.inMemoryIdentifier = "MyInMemoryRealm"
+        let sut = PhotoRepository(storage: StorageService(config))
+
+        await sut.savePhotos(query: key, photos)
+        
+        let getPhotos = try await sut.getPhotos(query: key)
+        
+        XCTAssertEqual(photos[0].id, getPhotos?[0].id)
+        
+        await sut.clearAll()
+        
+        let getPhotosClear = try await sut.getPhotos(query: key)
+        
+        XCTAssertNil(getPhotosClear)
+    }
 
 }

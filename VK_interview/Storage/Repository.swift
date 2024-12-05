@@ -19,7 +19,7 @@ class PhotoRepository: Repository {
     
     private let storage: StorageService
     
-    init(storage: StorageService = StorageService()) {
+    init(storage: StorageService = StorageService(.defaultConfiguration)) {
         self.storage = storage
     }
     
