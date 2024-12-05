@@ -14,7 +14,7 @@ class MockData {
         id: "1",
         width: 100, height: 100,
         createdAt: Date(timeIntervalSince1970: 100),
-        description: "foo",
+        description: "foo-fof-fjfoj-fjefjefsjf-sjefnjseifj-fjasekfsefjfisjfejisjf-fsjaekfajskfjsikjfoijigjkgj",
         user: MockData.mockUser,
         urls: .init(small: "small", regular: "regular"),
         likes: 777

@@ -29,7 +29,6 @@ class FeedInteractorTests: XCTestCase {
     
     func setupFeedInteractor() {
         sut = FeedInteractor()
-        sut.worker = MockWorker()
     }
     
     // MARK: Test doubles
@@ -42,6 +41,7 @@ class FeedInteractorTests: XCTestCase {
         var isLoadHide = false
         var isNew: Bool? = nil
         var alert: Bool = false
+        var (head, text) = ("", "")
         
         func presentSomething(response: Feed.Something.Response) {
             presentSomethingCalled = true
@@ -56,6 +56,7 @@ class FeedInteractorTests: XCTestCase {
                 isLoadShow = true
             case .presentAlert(header: let header, text: let text):
                 alert = true
+                (head, self.text) = (header, text ?? "")
             }
         }
     }
@@ -65,6 +66,10 @@ class FeedInteractorTests: XCTestCase {
     func testDoSomethingSearch() async throws {
         let spy = FeedPresentationLogicSpy()
         sut.presenter = spy
+        
+        var work =  MockWorker()
+        work.data = [MockData.mockPhoto]
+        sut.worker = work
         
         let query = ConfigurationQuery(query: "cat")
         
@@ -98,6 +103,7 @@ class FeedInteractorTests: XCTestCase {
         }
         await task.value
         await fulfillment(of: [expectation], timeout: 1)
+        sleep(1) // 🤡
         
         // Then
         XCTAssertTrue(spy.isLoadShow)
@@ -108,7 +114,9 @@ class FeedInteractorTests: XCTestCase {
     func testDoSomethingError() async throws {
         let spy = FeedPresentationLogicSpy()
         sut.presenter = spy
-        sut.worker = MockWorkerError()
+        var work = MockWorker()
+        work.error = DataError.notData
+        sut.worker = work
         let query = ConfigurationQuery(query: "cat")
         let request = Feed.Something.Request.search(parameters: query)
         
@@ -129,16 +137,16 @@ class FeedInteractorTests: XCTestCase {
 
 class MockWorker: FeedWorker {
     
-    override func getPhotos(parameters: ConfigurationQuery) async throws -> [Photo] {
-        return MockData.mockPhotos
-    }
-    
-}
-
-class MockWorkerError: FeedWorker {
+    var error: Error?
+    var data: [Photo]?
     
     override func getPhotos(parameters: ConfigurationQuery) async throws -> [Photo] {
-        throw DataError.notData
+        
+        if let error {
+            throw error
+        }
+        
+        return data!
     }
     
 }

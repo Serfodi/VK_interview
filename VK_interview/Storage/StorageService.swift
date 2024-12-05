@@ -12,7 +12,7 @@ final actor StorageService {
     
     private let configuration: Realm.Configuration
     
-    init(_ configuration: Realm.Configuration = Realm.Configuration(inMemoryIdentifier: "inMemory")) {
+    init(_ configuration: Realm.Configuration) {
         self.configuration = configuration
     }
     

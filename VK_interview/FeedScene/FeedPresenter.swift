@@ -23,7 +23,8 @@ class FeedPresenter: FeedPresentationLogic {
     func presentSomething(response: Feed.Something.Response) async {
         switch response {
         case .presentPhotos(photos: let photos, new: let new):
-            let photosCell = await prepareMedia(photos)
+//            let photosCell = await prepareMedia(photos)
+            let photosCell = photos.map(convert)
             if new {
                 photoDisplay = photosCell
             } else {
@@ -40,8 +41,9 @@ class FeedPresenter: FeedPresentationLogic {
     }
 }
 
-private extension FeedPresenter {
+extension FeedPresenter {
         
+//  СМОТРЕТЬ: VK_interviewTests.FeedPresenterTests testCalculateCellSizeNoAsync
     func prepareMedia(_ photos: [Photo]) async -> [PhotoDisplayCell] {
         await withTaskGroup(of: PhotoDisplayCell?.self) { group in
             for photo in photos {

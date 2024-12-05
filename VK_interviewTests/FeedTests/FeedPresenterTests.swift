@@ -37,6 +37,8 @@ class FeedPresenterTests: XCTestCase {
         var photoDisplayCell: [PhotoDisplayCell] = []
         var error: Bool = false
         var isLoadShow = false
+        var headText: String = ""
+        var text: String? = ""
         
         func displaySomething(viewModel: Feed.Something.ViewModel) {
             displaySomethingCalled = true
@@ -44,7 +46,8 @@ class FeedPresenterTests: XCTestCase {
             case .displayPhotosCell(photos: let photos):
                 photoDisplayCell = photos
             case .displayAlert(header: let header, text: let text):
-                self.error = header == "Error".localized()
+                headText = header
+                self.text = text
             case .displayFooterLoader:
                 self.isLoadShow = true
             }
@@ -104,5 +107,33 @@ class FeedPresenterTests: XCTestCase {
         // Then
         XCTAssertTrue(spy.isLoadShow, "The error was not present")
     }
+    
+    
+    /**
+     - Experiment: По итогу async код выигрывает только при +10000 или при условии что вычисления будут очень долгими)
+        При маленьких данных 30, noAsync быстрее:
+        * testCalculateCellSize passed (1.109 seconds)
+        * testCalculateCellSizeNoAsync passed (0.407 seconds)
+     
+     */
+    func testCalculateCellSize() async throws {
+        let photos = [Photo](repeating: MockData.mockPhoto, count: 30)
+        measure {
+            let expectation = self.expectation(description: "async")
+            Task {
+                let _ = await sut.prepareMedia(photos)
+                expectation.fulfill()
+            }
+            wait(for: [expectation], timeout: 2.0)
+        }
+    }
+    
+    func testCalculateCellSizeNoAsync() throws {
+        let photos = [Photo](repeating: MockData.mockPhoto, count: 30)
+        measure {
+            let _ = photos.map(sut.convert)
+        }
+    }
+    
     
 }
